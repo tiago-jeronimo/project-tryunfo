@@ -9,11 +9,11 @@ class App extends React.Component {
       cardName: '',
       cardDescription: '',
       cardImage: '',
-      cardAttr1: '',
-      cardAttr2: '',
+      cardAttr1: '0',
+      cardAttr2: '0',
       cardAttr3: '',
       cardRare: '',
-      cardTrunfo: '',
+      cardTrunfo: 'false',
     };
     this.onInputChange = this.onInputChange.bind(this);
   }

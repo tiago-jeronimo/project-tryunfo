@@ -26,7 +26,7 @@ class Form extends React.Component {
             name="cardName"
             type="text"
             data-testid="name-input"
-            value={ cardName.value }
+            value={ cardName }
             onChange={ onInputChange }
           />
         </label>
