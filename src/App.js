@@ -13,7 +13,8 @@ class App extends React.Component {
       cardAttr2: '0',
       cardAttr3: '',
       cardRare: '',
-      cardTrunfo: 'false',
+      cardTrunfo: false,
+      isSaveButtonDisabled: true,
     };
     this.onInputChange = this.onInputChange.bind(this);
   }
@@ -22,6 +23,10 @@ class App extends React.Component {
     const { name } = target;
     const value = target.type === 'checked' ? target.checked : target.value;
     this.setState({ [name]: value });
+    const { cardName } = this.state;
+    if (cardName !== '') {
+      this.setState({ isSaveButtonDisabled: false });
+    }
   }
 
   render() {
@@ -34,6 +39,7 @@ class App extends React.Component {
       cardImage,
       cardRare,
       cardTrunfo,
+      isSaveButtonDisabled,
     } } = this;
 
     return (
@@ -49,6 +55,8 @@ class App extends React.Component {
           cardRare={ cardRare }
           cardTrunfo={ cardTrunfo }
           onInputChange={ this.onInputChange }
+          isSaveButtonDisabled={ isSaveButtonDisabled }
+
         />
         <Card
           cardName={ cardName }
