@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class Card extends React.Component {
+class CardsRender extends React.Component {
   render() {
     const {
       cardName,
@@ -12,6 +12,7 @@ class Card extends React.Component {
       cardImage,
       cardRare,
       cardTrunfo,
+      excluirCarta,
     } = this.props;
     return (
       <div>
@@ -22,12 +23,19 @@ class Card extends React.Component {
         <p data-testid="attr2-card">{cardAttr2}</p>
         <p data-testid="attr3-card">{cardAttr3}</p>
         <p data-testid="rare-card">{cardRare}</p>
-        { cardTrunfo ? <span data-testid="trunfo-card">Super Trunfo</span> : ''}
+        { cardTrunfo && (<span data-testid="trunfo-card">Super Trunfo</span>) }
+        <button
+          type="button"
+          onClick={ excluirCarta }
+          data-testid="delete-button"
+        >
+          Excluir
+        </button>
       </div>
     );
   }
 }
-Card.propTypes = {
+CardsRender.propTypes = {
   cardName: PropTypes.string.isRequired,
   cardDescription: PropTypes.string.isRequired,
   cardAttr1: PropTypes.string.isRequired,
@@ -36,5 +44,6 @@ Card.propTypes = {
   cardImage: PropTypes.string.isRequired,
   cardRare: PropTypes.string.isRequired,
   cardTrunfo: PropTypes.bool.isRequired,
+  excluirCarta: PropTypes.func.isRequired,
 };
-export default Card;
+export default CardsRender;

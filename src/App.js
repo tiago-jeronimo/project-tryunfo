@@ -1,6 +1,7 @@
 import React from 'react';
 import Form from './components/Form';
 import Card from './components/Card';
+import CardsRender from './components/CardsRender';
 
 class App extends React.Component {
   constructor(props) {
@@ -24,31 +25,35 @@ class App extends React.Component {
     this.validacao = this.validacao.bind(this);
     this.validacaoNumbersMaiores = this.validacaoNumbersMaiores.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
+    this.confereTrufo = this.confereTrufo.bind(this);
+    this.excluirCarta = this.excluirCarta.bind(this);
   }
 
   onInputChange({ target }) {
-    const { name } = target;
-    const value = target.type === 'checked' ? target.checked : target.value;
-    this.setState({ [name]: value },
+    const { name, type, checked, value } = target;
+    const values = type === 'checkbox' ? checked : value;
+    this.setState({ [name]: values },
       () => this.validationForms());
   }
 
   onSaveButtonClick(e) {
     e.preventDefault();
     const { cardName, cardDescription, cardImage,
-      cardAttr1, cardAttr2, cardAttr3, cardRare } = this.state;
+      cardAttr1, cardAttr2, cardAttr3, cardRare, cardTrunfo } = this.state;
 
-    const theCard = [{
-      cardName: { cardName },
-      cardDescription: { cardDescription },
-      cardImage: { cardImage },
-      cardAttr1: { cardAttr1 },
-      cardAttr2: { cardAttr2 },
-      cardAttr3: { cardAttr3 },
-      cardRare: { cardRare },
-    }];
+    const theCard = {
+      cardName,
+      cardDescription,
+      cardImage,
+      cardAttr1,
+      cardAttr2,
+      cardAttr3,
+      cardRare,
+      cardTrunfo,
+    };
     this.setState((prevState) => ({ newCard: [...prevState.newCard, theCard],
     }));
+    this.confereTrufo();
     this.setState({
       cardName: '',
       cardDescription: '',
@@ -97,11 +102,6 @@ class App extends React.Component {
     return true;
   }
 
-  // SE TODAS RETORNAREM FALSE: isSaveButtonDisabled vai ficar false
-  // SE TODAS RETORNAREM TRUE : isSaveButtonDisabled vai ficar TRUE
-  // se alguma retornar false: isSaveButtonDisabled vai ficar false
-  // Se alguma retornar true: isSaveButtonDisabled vai ficar false
-
   validationForms() {
     if (this.validacao()
     || this.validacaoNumbers()
@@ -111,6 +111,19 @@ class App extends React.Component {
     } else {
       this.setState({ isSaveButtonDisabled: false });
     }
+  }
+
+  confereTrufo() {
+    this.setState(({ newCard }) => ({
+      hasTrunfo: newCard.some((elementos) => elementos.cardTrunfo),
+    }));
+  }
+
+  excluirCarta(event) {
+    this.setState(({ newCard }) => ({
+      newCard: newCard.filter((elemento) => !elemento.cardName === event.target.name),
+    }));
+    this.confereTrufo();
   }
 
   render() {
@@ -124,6 +137,8 @@ class App extends React.Component {
       cardRare,
       cardTrunfo,
       isSaveButtonDisabled,
+      hasTrunfo,
+      newCard,
     } } = this;
 
     return (
@@ -141,6 +156,7 @@ class App extends React.Component {
           onInputChange={ this.onInputChange }
           isSaveButtonDisabled={ isSaveButtonDisabled }
           onSaveButtonClick={ this.onSaveButtonClick }
+          hasTrunfo={ hasTrunfo }
         />
         <Card
           cardName={ cardName }
@@ -152,6 +168,14 @@ class App extends React.Component {
           cardRare={ cardRare }
           cardTrunfo={ cardTrunfo }
         />
+
+        {
+          newCard.map((elemento, index) => (
+            <div key={ index }>
+              <CardsRender { ...elemento } excluirCarta={ this.excluirCarta } />
+            </div>
+          ))
+        }
       </div>
     );
   }
