@@ -17,6 +17,7 @@ class App extends React.Component {
       cardTrunfo: false,
       isSaveButtonDisabled: true,
       newCard: [],
+      searchInput: '',
     };
     this.validationForms = this.validationForms.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
@@ -27,6 +28,7 @@ class App extends React.Component {
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
     this.confereTrufo = this.confereTrufo.bind(this);
     this.excluirCarta = this.excluirCarta.bind(this);
+    this.heandleSearch = this.heandleSearch.bind(this);
   }
 
   onInputChange({ target }) {
@@ -126,6 +128,11 @@ class App extends React.Component {
     this.confereTrufo();
   }
 
+  heandleSearch(event) {
+    event.preventDefault();
+    this.setState({ searchInput: event.target.value });
+  }
+
   render() {
     const { state: {
       cardName,
@@ -139,6 +146,7 @@ class App extends React.Component {
       isSaveButtonDisabled,
       hasTrunfo,
       newCard,
+      searchInput,
     } } = this;
 
     return (
@@ -158,6 +166,20 @@ class App extends React.Component {
           onSaveButtonClick={ this.onSaveButtonClick }
           hasTrunfo={ hasTrunfo }
         />
+        <div>
+          <label htmlFor="inputFlter">
+            Filtros de Busca:
+            <input
+              data-testid="name-filter"
+              name="nameFilter"
+              type="text"
+              placeholder="Nome da carta"
+              searchInput={ searchInput }
+              onChange={ this.heandleSearch }
+              value={ searchInput }
+            />
+          </label>
+        </div>
         <Card
           cardName={ cardName }
           cardDescription={ cardDescription }
@@ -170,11 +192,12 @@ class App extends React.Component {
         />
 
         {
-          newCard.map((elemento, index) => (
-            <div key={ index }>
-              <CardsRender { ...elemento } excluirCarta={ this.excluirCarta } />
-            </div>
-          ))
+          newCard.filter((p) => p.cardName.includes(searchInput))
+            .map((elemento, index) => (
+              <div key={ index }>
+                <CardsRender { ...elemento } excluirCarta={ this.excluirCarta } />
+              </div>
+            ))
         }
       </div>
     );
