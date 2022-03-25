@@ -18,6 +18,7 @@ class App extends React.Component {
       isSaveButtonDisabled: true,
       newCard: [],
       searchInput: '',
+      rarity: 'todas',
     };
     this.validationForms = this.validationForms.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
@@ -29,6 +30,11 @@ class App extends React.Component {
     this.confereTrufo = this.confereTrufo.bind(this);
     this.excluirCarta = this.excluirCarta.bind(this);
     this.heandleSearch = this.heandleSearch.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+  }
+
+  handleSelectChange(event) {
+    this.setState({ rarity: event.target.value });
   }
 
   onInputChange({ target }) {
@@ -147,6 +153,7 @@ class App extends React.Component {
       hasTrunfo,
       newCard,
       searchInput,
+      rarity,
     } } = this;
 
     return (
@@ -180,6 +187,24 @@ class App extends React.Component {
             />
           </label>
         </div>
+
+        <div>
+          <label htmlFor="raridade">
+            Raridade
+            <select
+              data-testid="rare-filter"
+              name="rarity"
+              onChange={ this.handleSelectChange }
+              value={ rarity }
+            >
+              <option value="todas">Todas</option>
+              <option value="normal">Normal</option>
+              <option value="raro">Raro</option>
+              <option value="muito raro">Muito Raro</option>
+            </select>
+          </label>
+        </div>
+
         <Card
           cardName={ cardName }
           cardDescription={ cardDescription }
@@ -191,14 +216,22 @@ class App extends React.Component {
           cardTrunfo={ cardTrunfo }
         />
 
-        {
+        {rarity === 'todas' ? (
           newCard.filter((p) => p.cardName.includes(searchInput))
             .map((elemento, index) => (
               <div key={ index }>
                 <CardsRender { ...elemento } excluirCarta={ this.excluirCarta } />
               </div>
             ))
-        }
+        ) : (
+          newCard.filter((p) => p.cardName.includes(searchInput))
+            .filter((elements) => elements.cardRare === rarity)
+            .map((elemento, i) => (
+              <div key={ i }>
+                <CardsRender { ...elemento } excluirCarta={ this.excluirCarta } />
+              </div>
+            ))
+        )}
       </div>
     );
   }
